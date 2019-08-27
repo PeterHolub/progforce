@@ -2,9 +2,10 @@ package com.peterholub;
 
 import com.peterholub.entity.Product;
 import com.peterholub.entity.ProductStatus;
+import com.peterholub.store.Store;
+import com.peterholub.store.StoreFactoryMethod;
 import com.peterholub.store.impl.Fozzy;
 import com.peterholub.store.impl.Novus;
-import com.peterholub.store.StoreFactory;
 import com.peterholub.util.SQLScriptRunner;
 
 import java.math.BigDecimal;
@@ -25,6 +26,9 @@ public class Main {
     private final static int DRINKS_CATEGORY_ID = 3;
     private final static int FROZEN_CATEGORY_ID = 4;
 
+    private final static String NOVUS_TYPE = "Novus";
+    private final static String FOZZY_TYPE = "Fozzy";
+
     //По поводу 2-х потоков, можно посмотреть на счет выноса параметров в абстракную таску имплементирующую  Runnable
     // и одну ее выполнять в разных потоках.Но на первый взгяд эта таска будет с кучей параметров
     //что тоже не очень читабельно. Возможно разбивавка на еще больше методов поможет.
@@ -32,8 +36,8 @@ public class Main {
         //Initialization of database with values
 
         SQLScriptRunner.runScript(FILENAME_INIT_SCRIPT);
-        Novus novus = StoreFactory.getNovusInstance();
-        Fozzy fozzy = StoreFactory.getFozzyInstance();
+        Store novus = StoreFactoryMethod.getStore(NOVUS_TYPE);
+        Store fozzy = StoreFactoryMethod.getStore(FOZZY_TYPE);
 
         Thread novusThread = new Thread(() -> {
             // Записать по 3-4 продукта в категории;
